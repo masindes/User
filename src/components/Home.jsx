@@ -24,10 +24,15 @@ const Home = () => {
     setVisibleProperties((prev) => prev + 9);
   };
 
+  const handleViewLess = () => {
+    // Reset the number of visible properties to the initial value (9)
+    setVisibleProperties(9);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Hero Section */}
-      <section className="bg-indigo-700 py-20 mb-4">
+      <section className="bg-sky-900 py-20 mb-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
           <div className="text-center">
             <h1 className="text-4xl font-extrabold text-white sm:text-5xl md:text-6xl">
@@ -52,7 +57,7 @@ const Home = () => {
               </p>
               <Link
                 to="/add-property"
-                className="inline-block bg-indigo-500 text-white rounded-lg px-4 py-2 hover:bg-indigo-600"
+                className="inline-block bg-sky-700 text-white rounded-lg px-4 py-2 hover:bg-black"
               >
                 Add Property
               </Link>
@@ -66,7 +71,7 @@ const Home = () => {
               </p>
               <Link
                 to="/add-tenant"
-                className="inline-block bg-sky-500 text-white rounded-lg px-4 py-2 hover:bg-black"
+                className="inline-block bg-sky-700 text-white rounded-lg px-4 py-2 hover:bg-black"
               >
                 Add Tenant
               </Link>
@@ -80,7 +85,7 @@ const Home = () => {
               </p>
               <Link
                 to="/add-payment"
-                className="inline-block bg-sky-500 text-white rounded-lg px-4 py-2 hover:bg-black"
+                className="inline-block bg-sky-700 text-white rounded-lg px-4 py-2 hover:bg-black"
               >
                 Add Payment
               </Link>
@@ -92,7 +97,7 @@ const Home = () => {
       {/* Browse Properties Section */}
       <section className="bg-blue-50 px-4 py-10">
         <div className="container-xl lg:container m-auto">
-          <h2 className="text-3xl font-bold text-sky-500 mb-6 text-center">
+          <h2 className="text-3xl font-bold text-sky-700 mb-6 text-center">
             Browse Properties
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -111,17 +116,25 @@ const Home = () => {
               </div>
             ))}
           </div>
-          {/* View More Button */}
-          {visibleProperties < properties.length && (
-            <div className="text-center mt-6">
+          {/* View More / View Less Buttons */}
+          <div className="text-center mt-6">
+            {visibleProperties < properties.length && (
               <button
                 onClick={handleViewMore}
-                className="bg-sky-700 text-white px-6 py-2 rounded-lg hover:bg-black transition duration-300"
+                className="bg-sky-700 text-white px-6 py-2 rounded-lg hover:bg-black transition duration-300 mr-2"
               >
                 View More
               </button>
-            </div>
-          )}
+            )}
+            {visibleProperties > 9 && (
+              <button
+                onClick={handleViewLess}
+                className="bg-sky-700 text-white px-6 py-2 rounded-lg hover:bg-black transition duration-300"
+              >
+                View Less
+              </button>
+            )}
+          </div>
         </div>
       </section>
     </div>
