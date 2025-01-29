@@ -18,10 +18,10 @@ const Navbar = () => {
                   <a href="/index.html" className="text-white bg-black hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">
                     Home
                   </a>
-                  <a href="/jobs.html" className="text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">
+                  <a href="/property.html" className="text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">
                     Property
                   </a>
-                  <a href="/add-job.html" className="text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">
+                  <a href="/add-property.html" className="text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">
                     Add Property
                   </a>
                 </div>
