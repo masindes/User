@@ -4,9 +4,12 @@ import { Link } from 'react-router-dom';
 
 const PropertyList = () => {
   const [properties, setProperties] = useState([]);
+  const [tenants, setTenants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [visibleProperties, setVisibleProperties] = useState(9); // Initially show 9 properties
 
+  // Fetch properties and tenants
   useEffect(() => {
     const fetchProperties = async () => {
       try {
@@ -20,7 +23,18 @@ const PropertyList = () => {
       }
     };
 
+    const fetchTenants = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/tenant');
+        setTenants(response.data);  // Assuming tenant data is fetched from 'tenant' endpoint
+      } catch (error) {
+        console.error('Error fetching tenants:', error);
+        setError('Failed to fetch tenants. Please try again later.');
+      }
+    };
+
     fetchProperties();
+    fetchTenants();
   }, []);
 
   const handleDelete = async (id) => {
@@ -36,6 +50,30 @@ const PropertyList = () => {
     }
   };
 
+  const handleAssignTenant = async (propertyId, tenantId) => {
+    try {
+      // Send the updated property data with the assigned tenant
+      await axios.put(`http://localhost:5000/property/${propertyId}`, { tenantId });
+      setProperties(
+        properties.map((property) =>
+          property.id === propertyId ? { ...property, tenantId } : property
+        )
+      );
+      alert('Tenant assigned successfully!');
+    } catch (error) {
+      console.error('Error assigning tenant:', error);
+      alert('Failed to assign tenant. Please try again.');
+    }
+  };
+
+  const loadMoreProperties = () => {
+    setVisibleProperties((prev) => prev + 9); // Show 9 more properties
+  };
+
+  const showLessProperties = () => {
+    setVisibleProperties(9); // Reset to show only 9 properties
+  };
+
   if (loading) {
     return <div className="text-center mt-8">Loading properties...</div>;
   }
@@ -48,26 +86,25 @@ const PropertyList = () => {
     return <div className="text-center mt-8">No properties found.</div>;
   }
 
+  // Slice the properties array to show only the visible ones
+  const propertiesToShow = properties.slice(0, visibleProperties);
+
   return (
     <section className="bg-blue-50 px-4 py-10">
       <div className="container-xl lg:container m-auto">
-        <h2 className="text-3xl font-bold text-sky-700 mb-6 text-center">
-          Properties
-        </h2>
+        <h2 className="text-3xl font-bold text-sky-700 mb-6 text-center">Properties</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {properties.map((property) => (
+          {propertiesToShow.map((property) => (
             <div key={property.id} className="bg-white rounded-xl shadow-md relative">
               <div className="p-4">
                 {/* Vacant/Occupied Badge */}
                 <div className="absolute top-4 right-4">
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                      property.tenants && property.tenants.length > 0
-                        ? 'bg-green-100 text-green-800' // Occupied
-                        : 'bg-red-100 text-red-800' // Vacant
+                      property.tenantId ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                     }`}
                   >
-                    {property.tenants && property.tenants.length > 0 ? 'Occupied' : 'Vacant'}
+                    {property.tenantId ? 'Occupied' : 'Vacant'}
                   </span>
                 </div>
 
@@ -80,6 +117,23 @@ const PropertyList = () => {
                   <p>{property.description}</p>
                 </div>
                 <h3 className="text-red-500 mb-2">Rent: ${property.rent}</h3>
+
+                {/* Tenant Assignment */}
+                {!property.tenantId && (
+                  <div className="mb-4">
+                    <select
+                      onChange={(e) => handleAssignTenant(property.id, e.target.value)}
+                      className="p-2 border rounded"
+                    >
+                      <option value="">Assign Tenant</option>
+                      {tenants.map((tenant) => (
+                        <option key={tenant.id} value={tenant.id}>
+                          {tenant.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 {/* Edit and Delete Buttons */}
                 <div className="flex space-x-2">
@@ -100,6 +154,27 @@ const PropertyList = () => {
             </div>
           ))}
         </div>
+
+        {/* Button for loading more properties */}
+        {visibleProperties < properties.length ? (
+          <div className="text-center mt-6">
+            <button
+              onClick={loadMoreProperties}
+              className="bg-sky-700 text-white px-6 py-2 rounded hover:bg-sky-800"
+            >
+              Load More
+            </button>
+          </div>
+        ) : (
+          <div className="text-center mt-6">
+            <button
+              onClick={showLessProperties}
+              className="bg-sky-700 text-white px-6 py-2 rounded hover:bg-sky-800"
+            >
+              Show Less
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

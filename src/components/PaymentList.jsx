@@ -6,6 +6,7 @@ const PaymentList = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [visiblePayments, setVisiblePayments] = useState(9); // Initially show 9 payments
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -36,6 +37,14 @@ const PaymentList = () => {
     }
   };
 
+  const loadMorePayments = () => {
+    setVisiblePayments((prev) => prev + 9); // Show 9 more payments
+  };
+
+  const showLessPayments = () => {
+    setVisiblePayments(9); // Reset to show only 9 payments
+  };
+
   if (loading) {
     return <div className="text-center mt-8">Loading payments...</div>;
   }
@@ -48,14 +57,15 @@ const PaymentList = () => {
     return <div className="text-center mt-8">No payments found.</div>;
   }
 
+  // Slice the payments array to show only the visible ones
+  const paymentsToShow = payments.slice(0, visiblePayments);
+
   return (
     <section className="bg-blue-50 px-4 py-10">
       <div className="container-xl lg:container m-auto">
-        <h2 className="text-3xl font-bold text-sky-700 mb-6 text-center">
-          Payments
-        </h2>
+        <h2 className="text-3xl font-bold text-sky-700 mb-6 text-center">Payments</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {payments.map((payment) => (
+          {paymentsToShow.map((payment) => (
             <div key={payment.id} className="bg-white rounded-xl shadow-md relative">
               <div className="p-4">
                 {/* Payment Details */}
@@ -85,6 +95,27 @@ const PaymentList = () => {
             </div>
           ))}
         </div>
+
+        {/* Button for loading more payments */}
+        {visiblePayments < payments.length ? (
+          <div className="text-center mt-6">
+            <button
+              onClick={loadMorePayments}
+              className="bg-sky-700 text-white px-6 py-2 rounded hover:bg-sky-800"
+            >
+              Load More
+            </button>
+          </div>
+        ) : (
+          <div className="text-center mt-6">
+            <button
+              onClick={showLessPayments}
+              className="bg-sky-700 text-white px-6 py-2 rounded hover:bg-sky-800"
+            >
+              Show Less
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
