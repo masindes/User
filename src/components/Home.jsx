@@ -48,47 +48,35 @@ const Home = () => {
       {/* Cards Section */}
       <section className="py-4">
         <div className="container-xl lg:container m-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-lg">
-            {/* Add Property Card */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-bold">Add Property</h2>
-              <p className="mt-2 mb-4">
-                Add a new property to your portfolio.
-              </p>
-              <Link
-                to="/add-property"
-                className="inline-block bg-sky-700 text-white rounded-lg px-4 py-2 hover:bg-black"
-              >
-                Add Property
-              </Link>
-            </div>
+          <div className="flex justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+              {/* Add Property Card */}
+              <div className="bg-white p-8 rounded-lg shadow-md w-full">
+                <h2 className="text-3xl font-bold mb-4">Add Property</h2>
+                <p className="mt-2 mb-6 text-lg">
+                  Add a new property to your portfolio.
+                </p>
+                <Link
+                  to="/add-property"
+                  className="inline-block bg-sky-700 text-white rounded-lg px-6 py-3 hover:bg-black text-lg"
+                >
+                  Add Property
+                </Link>
+              </div>
 
-            {/* Add Tenant Card */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-bold">Add Tenant</h2>
-              <p className="mt-2 mb-4">
-                Add a new tenant to your property.
-              </p>
-              <Link
-                to="/add-tenant"
-                className="inline-block bg-sky-700 text-white rounded-lg px-4 py-2 hover:bg-black"
-              >
-                Add Tenant
-              </Link>
-            </div>
-
-            {/* Add Payment Card */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-bold">Add Payment</h2>
-              <p className="mt-2 mb-4">
-                Record a new payment from a tenant.
-              </p>
-              <Link
-                to="/add-payment"
-                className="inline-block bg-sky-700 text-white rounded-lg px-4 py-2 hover:bg-black"
-              >
-                Add Payment
-              </Link>
+              {/* Add Tenant Card */}
+              <div className="bg-white p-8 rounded-lg shadow-md w-full">
+                <h2 className="text-3xl font-bold mb-4">Add Tenant</h2>
+                <p className="mt-2 mb-6 text-lg">
+                  Add a new tenant to your property.
+                </p>
+                <Link
+                  to="/add-tenant"
+                  className="inline-block bg-sky-700 text-white rounded-lg px-6 py-3 hover:bg-black text-lg"
+                >
+                  Add Tenant
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -101,7 +89,7 @@ const Home = () => {
             Browse Properties
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {properties.slice(0, visibleProperties).map(property => (
+            {properties.slice(0, visibleProperties).map((property) => (
               <div key={property.id} className="bg-white rounded-xl shadow-md relative">
                 <div className="p-4">
                   <div className="mb-6">
