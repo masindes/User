@@ -5,6 +5,9 @@ import Home from './components/Home';
 import PropertyList from './components/PropertyList';
 import TenantList from './components/TenantList';
 import PaymentList from './components/PaymentList';
+import AddProperty from './components/AddProperty';
+import AddTenant from './components/AddTenant';
+import AddPayment from './components/AddPayment';
 
 const App = () => {
   return (
@@ -16,6 +19,12 @@ const App = () => {
           <Route path="/properties" element={<PropertyList />} />
           <Route path="/tenants" element={<TenantList />} />
           <Route path="/payments" element={<PaymentList />} />
+          <Route path="/add-property" element={<AddProperty />} />
+          <Route path="/edit-property/:id" element={<AddProperty />} />
+          <Route path="/add-tenant" element={<AddTenant />} />
+          <Route path="/edit-tenant/:id" element={<AddTenant />} />
+          <Route path="/add-payment" element={<AddPayment />} />
+          <Route path="/edit-payment/:id" element={<AddPayment />} />
         </Routes>
       </div>
     </Router>

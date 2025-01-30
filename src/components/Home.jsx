@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
-  const [visibleProperties, setVisibleProperties] = useState(9); // Number of properties to show initially
+  const [visibleProperties, setVisibleProperties] = useState(9); 
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -20,12 +20,12 @@ const Home = () => {
   }, []);
 
   const handleViewMore = () => {
-    // Increase the number of visible properties by 9 (or any desired number)
+   
     setVisibleProperties((prev) => prev + 9);
   };
 
   const handleViewLess = () => {
-    // Reset the number of visible properties to the initial value (9)
+    
     setVisibleProperties(9);
   };
 
@@ -92,6 +92,20 @@ const Home = () => {
             {properties.slice(0, visibleProperties).map((property) => (
               <div key={property.id} className="bg-white rounded-xl shadow-md relative">
                 <div className="p-4">
+                  {/* Vacant/Occupied Badge */}
+                  <div className="absolute top-4 right-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        property.tenants && property.tenants.length > 0
+                          ? 'bg-green-100 text-green-800' // Occupied
+                          : 'bg-red-100 text-red-800' // Vacant
+                      }`}
+                    >
+                      {property.tenants && property.tenants.length > 0 ? 'Occupied' : 'Vacant'}
+                    </span>
+                  </div>
+
+                  {/* Property Details */}
                   <div className="mb-6">
                     <h3 className="text-xl font-bold">{property.name}</h3>
                     <p className="text-gray-600">{property.location}</p>
