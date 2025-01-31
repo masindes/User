@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../assets/images/logo.png'; 
+import logo from '../assets/images/logo.png'; // Ensure the path to your logo is correct
 import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
@@ -11,8 +11,8 @@ const Navbar = () => {
             {/* Logo */}
             <NavLink to="/" className="flex flex-shrink-0 items-center mr-4">
               <img
-                className="h-10 w-auto" 
-                src={logo} 
+                className="h-10 w-auto" // Corrected className formatting
+                src={logo} // Use the imported logo
                 alt="Rent Management Logo"
               />
               <span className="hidden md:block text-white text-2xl font-bold ml-2">

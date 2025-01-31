@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const AddPayment = () => {
-  const { id } = useParams(); 
+  const { id } = useParams(); // For editing an existing payment
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({

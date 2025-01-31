@@ -4,7 +4,9 @@ import axios from 'axios';
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
-  const [visibleProperties, setVisibleProperties] = useState(9); 
+  const [visibleProperties, setVisibleProperties] = useState(9); // Number of properties to show initially
+  const [loading, setLoading] = useState(true); // Track loading state
+  const [error, setError] = useState(null); // Track errors
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -13,6 +15,9 @@ const Home = () => {
         setProperties(response.data);
       } catch (error) {
         console.error('Error fetching properties:', error);
+        setError('Failed to fetch properties. Please try again later.');
+      } finally {
+        setLoading(false); // End loading state
       }
     };
 
@@ -20,17 +25,41 @@ const Home = () => {
   }, []);
 
   const handleViewMore = () => {
-   
+    // Increase the number of visible properties by 9
     setVisibleProperties((prev) => prev + 9);
   };
 
   const handleViewLess = () => {
-    
+    // Reset the number of visible properties to the initial value (9)
     setVisibleProperties(9);
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-700"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-blue-50 px-4 py-10">
+        <div className="container-xl lg:container m-auto text-center">
+          <div className="text-red-500 text-xl font-bold mb-4">{error}</div>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-sky-700 text-white px-6 py-2 rounded-lg hover:bg-black transition duration-300"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-yellow-50">
+    <div className="min-h-screen bg-gray-100">
       {/* Hero Section */}
       <section className="bg-sky-900 py-20 mb-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
@@ -90,7 +119,10 @@ const Home = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {properties.slice(0, visibleProperties).map((property) => (
-              <div key={property.id} className="bg-white rounded-xl shadow-md relative">
+              <div
+                key={property.id}
+                className="bg-white rounded-xl shadow-md relative"
+              >
                 <div className="p-4">
                   {/* Vacant/Occupied Badge */}
                   <div className="absolute top-4 right-4">
@@ -101,23 +133,31 @@ const Home = () => {
                           : 'bg-red-100 text-red-800' // Vacant
                       }`}
                     >
-                      {property.tenants && property.tenants.length > 0 ? 'Occupied' : 'Vacant'}
+                      {property.tenants && property.tenants.length > 0
+                        ? 'Occupied'
+                        : 'Vacant'}
                     </span>
                   </div>
 
                   {/* Property Details */}
                   <div className="mb-6">
                     <h3 className="text-xl font-bold">{property.name}</h3>
-                    <p className="text-gray-600">{property.location}</p>
+                    <p className="text-gray-600">{property.address}</p>
                   </div>
                   <div className="mb-5">
                     <p>{property.description}</p>
                   </div>
                   <h3 className="text-red-500 mb-2">Rent: ${property.rent}</h3>
+
+                  {/* Bedrooms Section */}
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold">Bedrooms: {property.bedrooms}</h3>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
+
           {/* View More / View Less Buttons */}
           <div className="text-center mt-6">
             {visibleProperties < properties.length && (
