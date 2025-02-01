@@ -13,7 +13,7 @@ const PaymentList = () => {
 
   const fetchPayments = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/payments');
+      const response = await axios.get('https://rent-management-app.onrender.com/payments');
       setPayments(response.data);
     } catch (error) {
       console.error('Error fetching payments:', error);

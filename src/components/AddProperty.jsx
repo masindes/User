@@ -46,7 +46,7 @@ const AddProperty = () => {
 
     try {
       // Send POST request to add a new property
-      const response = await axios.post('http://localhost:5000/property', property);
+      const response = await axios.post('https://rent-management-app.onrender.com/property', property);
       console.log('Property Added Successfully:', response.data);
       navigate('/properties'); // Redirect to the property list
     } catch (err) {

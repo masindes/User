@@ -12,7 +12,7 @@ const PropertyList = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await fetch('http://localhost:5000/property');
+        const response = await fetch('https://rent-management-app.onrender.com/property');
         if (!response.ok) {
           throw new Error('Failed to fetch properties');
         }
@@ -32,7 +32,7 @@ const PropertyList = () => {
   // Delete a property
   const handleDelete = async (propertyId) => {
     try {
-      const response = await fetch(`http://localhost:5000/property/${propertyId}`, {
+      const response = await fetch(`https://rent-management-app.onrender.com/${propertyId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -95,7 +95,7 @@ const PropertyList = () => {
     try {
       // Send PATCH request to update the property
       const response = await fetch(
-        `http://localhost:5000/property/${editingProperty.id}`,
+        `https://rent-management-app.onrender.com/${editingProperty.id}`,
         {
           method: 'PATCH', // Updated to PATCH
           headers: {

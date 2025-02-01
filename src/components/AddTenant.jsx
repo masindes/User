@@ -32,7 +32,7 @@ const AddTenant = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/tenant', tenant);
+      await axios.post('https://rent-management-app.onrender.com/tenant', tenant);
       navigate('/tenants'); // Redirect to the tenants list
     } catch (error) {
       console.error('Error adding tenant:', error);

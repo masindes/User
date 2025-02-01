@@ -25,7 +25,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/property');
+        const response = await axios.get('https://rent-management-app.onrender.com/property');
         setProperties(response.data);
       } catch (error) {
         console.error('Error fetching properties:', error);
@@ -37,7 +37,7 @@ const Home = () => {
 
     const fetchTenants = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/tenant');
+        const response = await axios.get('https://rent-management-app.onrender.com/tenant');
         setTenants(response.data);
       } catch (error) {
         console.error('Error fetching tenants:', error);
@@ -51,7 +51,7 @@ const Home = () => {
   const handleAddTenant = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/tenant', newTenant);
+      const response = await axios.post('https://rent-management-app.onrender.com/tenant', newTenant);
       setTenants((prevTenants) => [...prevTenants, response.data]);
       setNewTenant({
         name: '',
@@ -69,7 +69,7 @@ const Home = () => {
   const handleAddProperty = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/property', newProperty);
+      const response = await axios.post('https://rent-management-app.onrender.com/property', newProperty);
       setProperties((prevProperties) => [...prevProperties, response.data]);
       setNewProperty({
         name: '',

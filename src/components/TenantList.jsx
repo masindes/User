@@ -12,7 +12,7 @@ const TenantList = () => {
   useEffect(() => {
     const fetchTenants = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/tenant');
+        const response = await axios.get('https://rent-management-app.onrender.com/tenant');
         setTenants(response.data);
       } catch (error) {
         console.error('Error fetching tenants:', error);
@@ -28,7 +28,7 @@ const TenantList = () => {
   // Assign a unit to a tenant
   const handleAssignUnit = async (tenantId, unitId) => {
     try {
-      await axios.put(`http://localhost:5000/tenant/${tenantId}`, { unit_id: unitId });
+      await axios.put(`https://rent-management-app.onrender.com/tenant/${tenantId}`, { unit_id: unitId });
       setTenants((prevTenants) =>
         prevTenants.map((tenant) =>
           tenant.id === tenantId ? { ...tenant, unit_id: unitId } : tenant
@@ -43,7 +43,7 @@ const TenantList = () => {
   // Delete a tenant
   const handleDelete = async (tenantId) => {
     try {
-      await axios.delete(`http://localhost:5000/tenant/${tenantId}`);
+      await axios.delete(`https://rent-management-app.onrender.com/tenant/${tenantId}`);
       setTenants((prevTenants) =>
         prevTenants.filter((tenant) => tenant.id !== tenantId)
       );

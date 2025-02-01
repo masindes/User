@@ -17,7 +17,7 @@ const AddPayment = () => {
   // Fetch payment details if editing
   React.useEffect(() => {
     if (id) {
-      axios.get(`http://localhost:5000/payment/${id}`)
+      axios.get(`https://rent-management-app.onrender.com/payment/${id}`)
         .then((response) => {
           setFormData(response.data);
         })
@@ -37,11 +37,11 @@ const AddPayment = () => {
     try {
       if (id) {
         // Update existing payment
-        await axios.patch(`http://localhost:5000/payment/${id}`, formData);
+        await axios.patch(`https://rent-management-app.onrender.com/payment/${id}`, formData);
         alert('Payment updated successfully!');
       } else {
         // Add new payment
-        await axios.post('http://localhost:5000/payment', formData);
+        await axios.post('https://rent-management-app.onrender.com/payment', formData);
         alert('Payment added successfully!');
       }
       navigate('/payments'); // Redirect to payments page
@@ -54,7 +54,7 @@ const AddPayment = () => {
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this payment?')) {
       try {
-        await axios.delete(`http://localhost:5000/payment/${id}`);
+        await axios.delete(`https://rent-management-app.onrender.com/payment/${id}`);
         alert('Payment deleted successfully!');
         navigate('/payments'); // Redirect to payments page
       } catch (error) {
