@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const PropertyList = () => {
@@ -7,13 +6,18 @@ const PropertyList = () => {
   const [visibleProperties, setVisibleProperties] = useState(9);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingProperty, setEditingProperty] = useState(null);
 
   // Fetch properties from the backend
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/property');
-        setProperties(response.data);
+        const response = await fetch('http://localhost:5000/property');
+        if (!response.ok) {
+          throw new Error('Failed to fetch properties');
+        }
+        const data = await response.json();
+        setProperties(data);
       } catch (error) {
         console.error('Error fetching properties:', error);
         setError('Failed to fetch properties. Please try again later.');
@@ -28,7 +32,12 @@ const PropertyList = () => {
   // Delete a property
   const handleDelete = async (propertyId) => {
     try {
-      await axios.delete(`http://localhost:5000/property/${propertyId}`);
+      const response = await fetch(`http://localhost:5000/property/${propertyId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete property');
+      }
       setProperties((prevProperties) =>
         prevProperties.filter((property) => property.id !== propertyId)
       );
@@ -46,6 +55,76 @@ const PropertyList = () => {
   // Show fewer properties
   const handleShowLess = () => {
     setVisibleProperties(9);
+  };
+
+  // Handle edit button click
+  const handleEdit = (property) => {
+    setEditingProperty(property);
+  };
+
+  // Handle form submission for editing
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    // Validation
+    if (
+      !editingProperty.name ||
+      !editingProperty.address ||
+      !editingProperty.rent ||
+      !editingProperty.bedrooms
+    ) {
+      setError('All fields are required!');
+      setLoading(false);
+      return;
+    }
+
+    if (isNaN(editingProperty.rent) || editingProperty.rent <= 0) {
+      setError('Please enter a valid rent value (must be a positive number).');
+      setLoading(false);
+      return;
+    }
+
+    if (isNaN(editingProperty.bedrooms) || editingProperty.bedrooms <= 0) {
+      setError('Please enter a valid number of bedrooms (must be a positive number).');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Send PATCH request to update the property
+      const response = await fetch(
+        `http://localhost:5000/property/${editingProperty.id}`,
+        {
+          method: 'PATCH', // Updated to PATCH
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(editingProperty),
+        }
+      );
+      if (!response.ok) {
+        throw new Error('Failed to update property');
+      }
+      const updatedProperty = await response.json();
+      console.log('Property Updated Successfully:', updatedProperty);
+
+      // Update the properties list with the edited property
+      setProperties((prevProperties) =>
+        prevProperties.map((property) =>
+          property.id === editingProperty.id ? editingProperty : property
+        )
+      );
+
+      // Reset editing state
+      setEditingProperty(null);
+    } catch (err) {
+      console.error('Error updating property:', err);
+      setError('Failed to update property. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Loading state
@@ -114,12 +193,12 @@ const PropertyList = () => {
 
                 {/* Edit and Delete Buttons */}
                 <div className="flex space-x-2 mt-2">
-                  <Link
-                    to={`/edit-property/${property.id}`}
+                  <button
+                    onClick={() => handleEdit(property)}
                     className="bg-sky-700 text-white px-4 py-2 rounded hover:bg-sky-800"
                   >
                     Edit
-                  </Link>
+                  </button>
                   <button
                     onClick={() => handleDelete(property.id)}
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
@@ -151,6 +230,88 @@ const PropertyList = () => {
             </button>
           )}
         </div>
+
+        {/* Edit Form Modal */}
+        {editingProperty && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-md">
+              <h2 className="text-2xl font-bold text-sky-700 mb-6">Edit Property</h2>
+              <form onSubmit={handleEditSubmit}>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={editingProperty.name}
+                    onChange={(e) =>
+                      setEditingProperty({ ...editingProperty, name: e.target.value })
+                    }
+                    className="w-full px-4 py-2 border rounded-lg"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700">Address</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={editingProperty.address}
+                    onChange={(e) =>
+                      setEditingProperty({ ...editingProperty, address: e.target.value })
+                    }
+                    className="w-full px-4 py-2 border rounded-lg"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700">Rent</label>
+                  <input
+                    type="number"
+                    name="rent"
+                    value={editingProperty.rent}
+                    onChange={(e) =>
+                      setEditingProperty({ ...editingProperty, rent: e.target.value })
+                    }
+                    className="w-full px-4 py-2 border rounded-lg"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700">Bedrooms</label>
+                  <input
+                    type="number"
+                    name="bedrooms"
+                    value={editingProperty.bedrooms}
+                    onChange={(e) =>
+                      setEditingProperty({ ...editingProperty, bedrooms: e.target.value })
+                    }
+                    className="w-full px-4 py-2 border rounded-lg"
+                    required
+                  />
+                </div>
+
+                <div className="flex space-x-2">
+                  <button
+                    type="submit"
+                    className="bg-sky-700 text-white px-4 py-2 rounded hover:bg-sky-800"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditingProperty(null)}
+                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
