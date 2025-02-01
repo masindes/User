@@ -7,16 +7,16 @@ const AddProperty = () => {
     name: '',
     address: '',
     rent: '',
-    bedrooms: '', // Bedrooms field is part of the state
+    bedrooms: '',
   });
-  const [loading, setLoading] = useState(false); // Track the loading state
-  const [error, setError] = useState(null); // Track errors
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Handle form input changes
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProperty({ ...property, [name]: value }); // Updates the property state, including bedrooms
+    setProperty({ ...property, [name]: value });
   };
 
   // Handle form submission
@@ -25,21 +25,19 @@ const AddProperty = () => {
     setLoading(true);
     setError(null);
 
-    // Basic validation: check if all fields are filled
+    // Validation
     if (!property.name || !property.address || !property.rent || !property.bedrooms) {
       setError('All fields are required!');
       setLoading(false);
       return;
     }
 
-    // Validate rent input
     if (isNaN(property.rent) || property.rent <= 0) {
       setError('Please enter a valid rent value (must be a positive number).');
       setLoading(false);
       return;
     }
 
-    // Validate bedrooms input
     if (isNaN(property.bedrooms) || property.bedrooms <= 0) {
       setError('Please enter a valid number of bedrooms (must be a positive number).');
       setLoading(false);
@@ -47,26 +45,15 @@ const AddProperty = () => {
     }
 
     try {
-      // Sending POST request to the backend
-      const response = await axios.post('http://localhost:5000/property', property, {
-        headers: {
-          'Content-Type': 'application/json', // Explicitly setting Content-Type
-        },
-      });
-
+      // Send POST request to add a new property
+      const response = await axios.post('http://localhost:5000/property', property);
       console.log('Property Added Successfully:', response.data);
-      navigate('/properties'); // Redirect to the property list after successful addition
+      navigate('/properties'); // Redirect to the property list
     } catch (err) {
       console.error('Error adding property:', err);
-
-      // Handling the error from the backend response
-      if (err.response) {
-        setError(err.response.data.message || 'Failed to add property. Please try again.');
-      } else {
-        setError('Something went wrong. Please try again later.');
-      }
+      setError('Failed to add property. Please try again.');
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false);
     }
   };
 
@@ -75,9 +62,10 @@ const AddProperty = () => {
       <div className="container-xl lg:container m-auto">
         <h2 className="text-3xl font-bold text-sky-700 mb-6 text-center">Add Property</h2>
 
-        {/* Show error message */}
+        {/* Error Message */}
         {error && <div className="text-red-500 mb-4 text-center">{error}</div>}
 
+        {/* Add Property Form */}
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-md p-6">
           <div className="mb-4">
             <label className="block text-gray-700">Name</label>
@@ -134,31 +122,7 @@ const AddProperty = () => {
             }`}
             disabled={loading}
           >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg
-                  className="animate-spin h-5 w-5 mr-3 text-white"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Adding...
-              </span>
-            ) : (
-              'Add Property'
-            )}
+            {loading ? 'Adding...' : 'Add Property'}
           </button>
         </form>
       </div>

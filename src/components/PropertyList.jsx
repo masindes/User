@@ -27,10 +27,8 @@ const PropertyList = () => {
 
   // Delete a property
   const handleDelete = async (propertyId) => {
-    console.log('Deleting property with ID:', propertyId); // Debugging
     try {
-      const response = await axios.delete(`http://localhost:5000/property/${propertyId}`);
-      console.log('Delete response:', response.data); // Debugging
+      await axios.delete(`http://localhost:5000/property/${propertyId}`);
       setProperties((prevProperties) =>
         prevProperties.filter((property) => property.id !== propertyId)
       );
