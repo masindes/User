@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const AddProperty = () => {
@@ -45,13 +44,25 @@ const AddProperty = () => {
     }
 
     try {
-      // Send POST request to add a new property
-      const response = await axios.post('https://rent-management-app.onrender.com/property', property);
-      console.log('Property Added Successfully:', response.data);
+      // Send POST request to add a new property using fetch
+      const response = await fetch('https://rent-management-app.onrender.com/property', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Specify the content type as JSON
+        },
+        body: JSON.stringify(property), // Convert the property object to JSON
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add property. Please try again.');
+      }
+
+      const data = await response.json(); // Parse the JSON response
+      console.log('Property Added Successfully:', data);
       navigate('/properties'); // Redirect to the property list
     } catch (err) {
       console.error('Error adding property:', err);
-      setError('Failed to add property. Please try again.');
+      setError(err.message || 'Failed to add property. Please try again.');
     } finally {
       setLoading(false);
     }

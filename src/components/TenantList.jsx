@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const TenantList = () => {
@@ -12,8 +11,12 @@ const TenantList = () => {
   useEffect(() => {
     const fetchTenants = async () => {
       try {
-        const response = await axios.get('https://rent-management-app.onrender.com/tenant');
-        setTenants(response.data);
+        const response = await fetch('https://rent-management-app.onrender.com/tenant');
+        if (!response.ok) {
+          throw new Error('Failed to fetch tenants.');
+        }
+        const data = await response.json();
+        setTenants(data);
       } catch (error) {
         console.error('Error fetching tenants:', error);
         setError('Failed to fetch tenants. Please try again later.');
@@ -28,7 +31,18 @@ const TenantList = () => {
   // Assign a unit to a tenant
   const handleAssignUnit = async (tenantId, unitId) => {
     try {
-      await axios.put(`https://rent-management-app.onrender.com/tenant/${tenantId}`, { unit_id: unitId });
+      const response = await fetch(`https://rent-management-app.onrender.com/tenant/${tenantId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ unit_id: unitId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to assign unit.');
+      }
+
       setTenants((prevTenants) =>
         prevTenants.map((tenant) =>
           tenant.id === tenantId ? { ...tenant, unit_id: unitId } : tenant
@@ -43,7 +57,14 @@ const TenantList = () => {
   // Delete a tenant
   const handleDelete = async (tenantId) => {
     try {
-      await axios.delete(`https://rent-management-app.onrender.com/tenant/${tenantId}`);
+      const response = await fetch(`https://rent-management-app.onrender.com/tenant/${tenantId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete tenant.');
+      }
+
       setTenants((prevTenants) =>
         prevTenants.filter((tenant) => tenant.id !== tenantId)
       );

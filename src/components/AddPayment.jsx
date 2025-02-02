@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const AddPayment = () => {
@@ -17,9 +16,15 @@ const AddPayment = () => {
   // Fetch payment details if editing
   React.useEffect(() => {
     if (id) {
-      axios.get(`https://rent-management-app.onrender.com/payment/${id}`)
+      fetch(`https://rent-management-app.onrender.com/payment/${id}`)
         .then((response) => {
-          setFormData(response.data);
+          if (!response.ok) {
+            throw new Error('Failed to fetch payment');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setFormData(data);
         })
         .catch((error) => {
           console.error('Error fetching payment:', error);
@@ -35,15 +40,24 @@ const AddPayment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (id) {
-        // Update existing payment
-        await axios.patch(`https://rent-management-app.onrender.com/payment/${id}`, formData);
-        alert('Payment updated successfully!');
-      } else {
-        // Add new payment
-        await axios.post('https://rent-management-app.onrender.com/payment', formData);
-        alert('Payment added successfully!');
+      const url = id
+        ? `https://rent-management-app.onrender.com/payment/${id}`
+        : 'https://rent-management-app.onrender.com/payment';
+      const method = id ? 'PATCH' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save payment');
       }
+
+      alert(id ? 'Payment updated successfully!' : 'Payment added successfully!');
       navigate('/payments'); // Redirect to payments page
     } catch (error) {
       console.error('Error saving payment:', error);
@@ -54,7 +68,14 @@ const AddPayment = () => {
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this payment?')) {
       try {
-        await axios.delete(`https://rent-management-app.onrender.com/payment/${id}`);
+        const response = await fetch(`https://rent-management-app.onrender.com/payment/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to delete payment');
+        }
+
         alert('Payment deleted successfully!');
         navigate('/payments'); // Redirect to payments page
       } catch (error) {

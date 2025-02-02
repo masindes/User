@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const AddTenant = () => {
@@ -24,7 +23,6 @@ const AddTenant = () => {
     setLoading(true);
     setError(null);
 
-    // Basic validation
     if (!tenant.name || !tenant.email || !tenant.phone) {
       setError('Name, Email, and Phone are required fields.');
       setLoading(false);
@@ -32,8 +30,19 @@ const AddTenant = () => {
     }
 
     try {
-      await axios.post('https://rent-management-app.onrender.com/tenant', tenant);
-      navigate('/tenants'); // Redirect to the tenants list
+      const response = await fetch('https://rent-management-app.onrender.com/tenant', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(tenant),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add tenant');
+      }
+
+      navigate('/tenants');
     } catch (error) {
       console.error('Error adding tenant:', error);
       setError('Failed to add tenant. Please try again later.');

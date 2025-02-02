@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
@@ -29,7 +31,7 @@ const Home = () => {
         setProperties(response.data);
       } catch (error) {
         console.error('Error fetching properties:', error);
-        setError('Failed to fetch properties. Please try again later.');
+        toast.error('Failed to fetch properties. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -41,6 +43,7 @@ const Home = () => {
         setTenants(response.data);
       } catch (error) {
         console.error('Error fetching tenants:', error);
+        toast.error('Failed to fetch tenants. Please try again later.');
       }
     };
 
@@ -59,10 +62,11 @@ const Home = () => {
         phone: '',
         unit_id: '',
         property_id: '',
-      }); // Reset form after successful add
+      });
+      toast.success('Tenant added successfully!');
     } catch (error) {
       console.error('Error adding tenant:', error);
-      setError('Failed to add tenant. Please try again.');
+      toast.error('Failed to add tenant. Please try again.');
     }
   };
 
@@ -76,10 +80,11 @@ const Home = () => {
         address: '',
         rent: '',
         bedrooms: '',
-      }); // Reset form after successful add
+      });
+      toast.success('Property added successfully!');
     } catch (error) {
       console.error('Error adding property:', error);
-      setError('Failed to add property. Please try again.');
+      toast.error('Failed to add property. Please try again.');
     }
   };
 
@@ -111,6 +116,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <ToastContainer />
       <section className="bg-sky-900 py-20 mb-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
           <h1 className="text-4xl font-extrabold text-white sm:text-5xl md:text-6xl">

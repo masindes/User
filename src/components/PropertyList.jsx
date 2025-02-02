@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PropertyList = () => {
   const [properties, setProperties] = useState([]);
@@ -21,6 +23,7 @@ const PropertyList = () => {
       } catch (error) {
         console.error('Error fetching properties:', error);
         setError('Failed to fetch properties. Please try again later.');
+        toast.error('Error fetching properties');
       } finally {
         setLoading(false);
       }
@@ -32,7 +35,7 @@ const PropertyList = () => {
   // Delete a property
   const handleDelete = async (propertyId) => {
     try {
-      const response = await fetch(`https://rent-management-app.onrender.com/${propertyId}`, {
+      const response = await fetch(`https://rent-management-app.onrender.com/property/${propertyId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -41,9 +44,11 @@ const PropertyList = () => {
       setProperties((prevProperties) =>
         prevProperties.filter((property) => property.id !== propertyId)
       );
+      toast.success('Property deleted successfully');
     } catch (error) {
       console.error('Error deleting property:', error);
       setError('Failed to delete property. Please try again.');
+      toast.error('Error deleting property');
     }
   };
 
@@ -77,27 +82,30 @@ const PropertyList = () => {
     ) {
       setError('All fields are required!');
       setLoading(false);
+      toast.error('All fields are required!');
       return;
     }
 
     if (isNaN(editingProperty.rent) || editingProperty.rent <= 0) {
       setError('Please enter a valid rent value (must be a positive number).');
       setLoading(false);
+      toast.error('Invalid rent value');
       return;
     }
 
     if (isNaN(editingProperty.bedrooms) || editingProperty.bedrooms <= 0) {
       setError('Please enter a valid number of bedrooms (must be a positive number).');
       setLoading(false);
+      toast.error('Invalid number of bedrooms');
       return;
     }
 
     try {
       // Send PATCH request to update the property
       const response = await fetch(
-        `https://rent-management-app.onrender.com/${editingProperty.id}`,
+        `https://rent-management-app.onrender.com/property/${editingProperty.id}`,
         {
-          method: 'PATCH', // Updated to PATCH
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -113,15 +121,17 @@ const PropertyList = () => {
       // Update the properties list with the edited property
       setProperties((prevProperties) =>
         prevProperties.map((property) =>
-          property.id === editingProperty.id ? editingProperty : property
+          property.id === editingProperty.id ? updatedProperty : property
         )
       );
 
       // Reset editing state
       setEditingProperty(null);
+      toast.success('Property updated successfully');
     } catch (err) {
       console.error('Error updating property:', err);
       setError('Failed to update property. Please try again.');
+      toast.error('Error updating property');
     } finally {
       setLoading(false);
     }
@@ -313,6 +323,9 @@ const PropertyList = () => {
           </div>
         )}
       </div>
+
+      {/* ToastContainer for displaying toasts */}
+      <ToastContainer />
     </section>
   );
 };

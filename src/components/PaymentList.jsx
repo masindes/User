@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const PaymentList = () => {
@@ -13,8 +12,12 @@ const PaymentList = () => {
 
   const fetchPayments = async () => {
     try {
-      const response = await axios.get('https://rent-management-app.onrender.com/payments');
-      setPayments(response.data);
+      const response = await fetch('https://rent-management-app.onrender.com/payments');
+      if (!response.ok) {
+        throw new Error('Failed to fetch payments');
+      }
+      const data = await response.json();
+      setPayments(data);
     } catch (error) {
       console.error('Error fetching payments:', error);
     }
@@ -27,7 +30,12 @@ const PaymentList = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this payment?')) {
       try {
-        await axios.delete(`http://localhost:5000/payment/${id}`);
+        const response = await fetch(`https://rent-management-app.onrender.com/payment/${id}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          throw new Error('Failed to delete payment');
+        }
         alert('Payment deleted successfully!');
         fetchPayments(); // Refresh the list after deletion
       } catch (error) {
