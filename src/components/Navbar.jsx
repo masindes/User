@@ -21,7 +21,7 @@ const Navbar = () => {
                 src={logo}
                 alt="Rent Management Logo"
               />
-              <span className="hidden md:block text-white text-2xl font-bold ml-2">
+              <span className="text-white text-2xl font-bold ml-2">
                 Rent Management
               </span>
             </NavLink>
