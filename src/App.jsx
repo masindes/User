@@ -8,6 +8,7 @@ import PaymentList from './components/PaymentList';
 import AddProperty from './components/AddProperty';
 import AddTenant from './components/AddTenant';
 import AddPayment from './components/AddPayment';
+import EditTenant from './components/EditTenant'; 
 
 const App = () => {
   return (
@@ -22,7 +23,7 @@ const App = () => {
           <Route path="/add-property" element={<AddProperty />} />
           <Route path="/edit-property/:id" element={<AddProperty />} />
           <Route path="/add-tenant" element={<AddTenant />} />
-          <Route path="/edit-tenant/:id" element={<AddTenant />} />
+          <Route path="/edit-tenant/:id" element={<EditTenant />} /> 
           <Route path="/add-payment" element={<AddPayment />} />
           <Route path="/edit-payment/:id" element={<AddPayment />} />
         </Routes>
